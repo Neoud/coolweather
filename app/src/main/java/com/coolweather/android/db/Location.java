@@ -1,14 +1,16 @@
 package com.coolweather.android.db;
 
-public class Location {
-    private int id;
+import org.litepal.crud.LitePalSupport;
+
+public class Location extends LitePalSupport {
+    private int loId;
     private String name;
     private double lat;
     private double lon;
 
 
-    public int getId() {
-        return id;
+    public int getLoId() {
+        return loId;
     }
 
     public String getName() {
@@ -23,8 +25,8 @@ public class Location {
         return lon;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setLoId(int loId) {
+        this.loId = loId;
     }
 
     public void setName(String name) {
