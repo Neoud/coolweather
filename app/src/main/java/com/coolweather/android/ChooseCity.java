@@ -34,8 +34,8 @@ public class ChooseCity extends AppCompatActivity {
     private ImageButton button;
     private TextView locationNow;
     private LinearLayout topCityLayout;
-    private String weatherId;
     private Location location;
+    private String weatherId;
 
     public LocationClient mLocationClient = null;
     private double latitude = 0.0;
@@ -44,13 +44,18 @@ public class ChooseCity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_city3);
+        // 初始化各组建
         button = findViewById(R.id.button_back);
         locationNow = findViewById(R.id.text_locationNow);
         topCityLayout = findViewById(R.id.layout_topCity);
+
         initLocation();
         initHotCity();
     }
 
+    /**
+     * 定位当前位置
+     */
     private void initLocation() {
         mLocationClient = new LocationClient(getApplicationContext());
         LocationClientOption option = new LocationClientOption();
@@ -80,6 +85,9 @@ public class ChooseCity extends AppCompatActivity {
 
     }
 
+    /**
+     * 读取热门城市信息，先从数据库中读取，数据库中没有就从服务器请求
+     */
     private void initHotCity() {
         List<Location> allLocations = LitePal.findAll(Location.class);
         if (allLocations.size() == 0) {
@@ -104,6 +112,10 @@ public class ChooseCity extends AppCompatActivity {
         showTopCity(allLocations);
     }
 
+    /**
+     * 显示热门城市信息
+     * @param locations
+     */
     private void showTopCity(List<Location> locations) {
         if (locations.size() >= 20) {
             for (int i = 0 ; i < 4 ; i ++) {

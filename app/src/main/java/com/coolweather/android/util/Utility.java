@@ -10,12 +10,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Utility {
 
     private static final String TAG = "Utility";
 
+
+    /**
+     * 处理服务端返回的Location信息，
+     * @param responseData 服务端返回的消息
+     * @return 地理位置信息Location实例
+     */
     public static Location handleLocationResponse(String responseData) {
         Location rLocation = null;
         if (!TextUtils.isEmpty(responseData)) {
@@ -29,10 +36,12 @@ public class Utility {
                     int id = location.getInt("id");
                     Double lat = location.getDouble("lat");
                     Double lon  = location.getDouble("lon");
-                    rLocation.setLoId(id);
-                    rLocation.setName(name);
-                    rLocation.setLon(lon);
-                    rLocation.setLat(lat);
+                    Location location1 = new Location();
+                    location1.setLoId(id);
+                    location1.setName(name);
+                    location1.setLon(lon);
+                    location1.setLat(lat);
+                    rLocation = location1;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -41,6 +50,12 @@ public class Utility {
         return rLocation;
     }
 
+
+    /**
+     * 处理服务端返回的热门城市信息，用LitePal存储数据
+     * @param responseData 服务端返回的数据
+     * @return 获取、存储数据成功与否
+     */
     public static boolean handleTopLocationResponse(String responseData) {
         if (!TextUtils.isEmpty(responseData)) {
             try {
@@ -69,6 +84,11 @@ public class Utility {
     }
 
 
+    /**
+     * 处理服务端返回的当日天气信息
+     * @param responseData 返回的天气JSON数据
+     * @return 天气信息WeatherNow的实例
+     */
     public static WeatherNow handleWeatherNowResponse(String responseData) {
         WeatherNow weatherNow = null;
         if (!TextUtils.isEmpty(responseData)) {
@@ -88,13 +108,20 @@ public class Utility {
         return weatherNow;
     }
 
+
+    /**
+     * 处理服务端返回的未来几天的天气信息
+     * @param responseData 返回的天气数据
+     * @return 未来几天天气信息的列表List<WeatherDaily>的实例
+     */
     public static List<WeatherDaily> handleWeatherDailyResponse(String responseData) {
         List<WeatherDaily> weatherDaily = null;
+        List<WeatherDaily> dailies = new ArrayList<>();
         if (!TextUtils.isEmpty(responseData)) {
             try {
                 JSONObject object = new JSONObject(responseData);
                 String code = object.getString("code");
-                if ("ok".equals(code)) {
+                if ("200".equals(code)) {
                     JSONArray allDaily = object.getJSONArray("daily");
                     for (int i = 0; i < allDaily.length(); i ++) {
                         JSONObject daily = allDaily.getJSONObject(i);
@@ -111,8 +138,10 @@ public class Utility {
                         int uvIndex = daily.getInt("uvIndex");
                         WeatherDaily weatherDaily1 = new WeatherDaily(fxDate, tempMax, tempMin, icon, text
                                 , windSpeed, humidity, precip, pressure, vis, uvIndex);
-                        weatherDaily.add(weatherDaily1);
+                        dailies.add(weatherDaily1);
+                        Log.d(TAG, "handleWeatherDailyResponse: " + dailies.size());
                     }
+                    weatherDaily = dailies;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
