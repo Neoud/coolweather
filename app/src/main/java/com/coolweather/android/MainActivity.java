@@ -37,6 +37,7 @@ import com.bumptech.glide.Glide;
 import com.coolweather.android.db.Location;
 import com.coolweather.android.json.WeatherDaily;
 import com.coolweather.android.json.WeatherNow;
+import com.coolweather.android.service.AutoUpdateService;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
@@ -102,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         // 打开缓存文件，并提取数据
         final SharedPreferences prefs = getSharedPreferences("forecast", MODE_PRIVATE);
         String weatherNow = prefs.getString("weatherNow", null);
@@ -161,6 +164,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     private void loadBingPic() {
