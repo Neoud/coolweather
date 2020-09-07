@@ -1,6 +1,7 @@
 package com.coolweather.android.util;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.coolweather.android.db.Location;
 import com.coolweather.android.json.WeatherDaily;
@@ -29,19 +30,23 @@ public class Utility {
             try {
                 JSONObject object = new JSONObject(responseData);
                 String status = object.get("code").toString();
-                JSONArray allLocations = object.getJSONArray("location");
-                for (int i = 0; i < allLocations.length(); i ++) {
-                    JSONObject location = allLocations.getJSONObject(i);
-                    String name = location.get("name").toString();
-                    int id = location.getInt("id");
-                    Double lat = location.getDouble("lat");
-                    Double lon  = location.getDouble("lon");
-                    Location location1 = new Location();
-                    location1.setLoId(id);
-                    location1.setName(name);
-                    location1.setLon(lon);
-                    location1.setLat(lat);
-                    rLocation = location1;
+                if (status.equals("200")) {
+                    JSONArray allLocations = object.getJSONArray("location");
+                    for (int i = 0; i < allLocations.length(); i ++) {
+                        JSONObject location = allLocations.getJSONObject(i);
+                        String name = location.get("name").toString();
+                        int id = location.getInt("id");
+                        Double lat = location.getDouble("lat");
+                        Double lon  = location.getDouble("lon");
+                        Location location1 = new Location();
+                        location1.setLoId(id);
+                        location1.setName(name);
+                        location1.setLon(lon);
+                        location1.setLat(lat);
+                        rLocation = location1;
+                    }
+                } else {
+                    return rLocation;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -139,7 +144,6 @@ public class Utility {
                         WeatherDaily weatherDaily1 = new WeatherDaily(fxDate, tempMax, tempMin, icon, text
                                 , windSpeed, humidity, precip, pressure, vis, uvIndex);
                         dailies.add(weatherDaily1);
-                        Log.d(TAG, "handleWeatherDailyResponse: " + dailies.size());
                     }
                     weatherDaily = dailies;
                 }
